@@ -5,7 +5,7 @@ from scipy.stats import norm
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv('.\dataset-projeto\global-data-on-sustainable-energy (1).csv')
+data = pd.read_csv('dataset-projeto/global-data-on-sustainable-energy (1).csv')
 
 # Filtrar os países de interesse
 paises = ["Madagascar","Egypt","Pakistan","China","Papua New Guine","Australia","Haiti","Brazil","Greece","Germany"]
