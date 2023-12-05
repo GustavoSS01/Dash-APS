@@ -35,6 +35,7 @@ pdf = norm.pdf(x, mean, std)
 
 # Inicializar o aplicativo Dash
 app = dash.Dash(__name__)
+server = app.server
 
 # Layout do Dashboard
 app.layout = html.Div(children=[
