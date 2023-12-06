@@ -13,6 +13,7 @@ g20 = ["Argentina","Australia","Brazil","Canada","China","France","Germany","Ind
 
 dados_filtrados = data[data['Entity'].isin(paises)]
 dados_filtrados_g20 = data[data["Entity"].isin(g20)]
+dados_brazil = dados_filtrados[dados_filtrados['Entity'] == 'Brazil']
 
 espaco_var = dados_filtrados.groupby('Entity')['Access to electricity (% of population)'].max() - dados_filtrados.groupby('Entity')['Access to electricity (% of population)'].min()
 
@@ -28,9 +29,9 @@ geracao_combust_fossil = dados_filtrados.groupby('Entity')['Electricity from fos
 
 correlacao = dados_filtrados['Access to electricity (% of population)'].corr(dados_filtrados['Value_co2_emissions_kt_by_country'])
 
-dados_filtrados = dados_filtrados.dropna(subset=['Renewable-electricity-generating-capacity-per-capita'])
-mean, std = dados_filtrados['Renewable-electricity-generating-capacity-per-capita'].mean(), dados_filtrados['Renewable-electricity-generating-capacity-per-capita'].std()
-x = np.linspace(dados_filtrados['Renewable-electricity-generating-capacity-per-capita'].min(), dados_filtrados['Renewable-electricity-generating-capacity-per-capita'].max(), 1000)
+dados_brazil = dados_brazil.dropna(subset=['Renewable-electricity-generating-capacity-per-capita'])
+mean, std = dados_brazil['Renewable-electricity-generating-capacity-per-capita'].mean(), dados_brazil['Renewable-electricity-generating-capacity-per-capita'].std()
+x = np.linspace(dados_brazil['Renewable-electricity-generating-capacity-per-capita'].min(), dados_brazil['Renewable-electricity-generating-capacity-per-capita'].max(), 1000)
 pdf = norm.pdf(x, mean, std)
 
 # Inicializar o aplicativo Dash
@@ -42,7 +43,7 @@ app.layout = html.Div(children=[
     html.H1(children='Dashboard de Sustentabilidade'),
 
     html.Div(children='''
-        Análise de dados relacionados à sustentabilidade energética.
+        Análise de dados relacionados à sustentabilidade energética dos anos 2000 a 2020.
     '''),
 
     dcc.Graph(
@@ -52,7 +53,7 @@ app.layout = html.Div(children=[
 
     dcc.Graph(
         id='graph-media-acesso-nrg',
-        figure=px.bar(x=media_acesso_nrg.index, y=media_acesso_nrg.values, title='Média dos percentuais de pessoas com acesso à energia elétrica (2000-2020)', labels={'x': 'País', 'y': 'Média de Acesso a Energia Elétrica'})
+        figure=px.bar(x=media_acesso_nrg.index, y=media_acesso_nrg.values, title='Média dos percentuais de pessoas com acesso à energia elétrica', labels={'x': 'País', 'y': 'Média de Acesso a Energia Elétrica(%)'})
     ),
 
     dcc.Graph(
@@ -62,7 +63,7 @@ app.layout = html.Div(children=[
 
     dcc.Graph(
         id='graph-geracao-combust-fossil',
-        figure=px.bar(x=geracao_combust_fossil.index, y=geracao_combust_fossil.values, title='Quantidade de Eletricidade Gerada a partir de Combustíveis Fósseis (2000-2020)', labels={'x': 'País', 'y': 'Eletricidade Gerada (TWh)'})
+        figure=px.bar(x=geracao_combust_fossil.index, y=geracao_combust_fossil.values, title='Quantidade de Eletricidade Gerada a partir de Combustíveis Fósseis', labels={'x': 'País', 'y': 'Eletricidade Gerada (TWh)'})
     ),
 
     # dcc.Graph(
@@ -72,7 +73,7 @@ app.layout = html.Div(children=[
 
     dcc.Graph(
         id='graph-boxplot-acesso-nrg',
-        figure=px.box(dados_filtrados, x='Access to electricity (% of population)', y='Entity', title='Comparação do Acesso à Energia Elétrica por País (2000-2020)', labels={'x': 'Percentual de Acesso à Energia Elétrica', 'y': 'País'})
+        figure=px.box(dados_filtrados, x='Access to electricity (% of population)', y='Entity', title='Comparação do Acesso à Energia Elétrica por País', labels={'x': 'Percentual de Acesso à Energia Elétrica(%)', 'y': 'País'})
     ),
 
     dcc.Graph(
@@ -82,7 +83,7 @@ app.layout = html.Div(children=[
 
     dcc.Graph(
         id='graph-distribuicao-normal',
-        figure=px.line(x=x, y=pdf, title='Capacidade de geração de energia renovável per capita (TWh) - Distribuição Normal', labels={'x': 'Capacidade de geração de energia renovável per capita (TWh)', 'y': 'Densidade de Probabilidade'})
+        figure=px.line(x=x, y=pdf, title='Capacidade de geração de energia renovável per capita no Brasil (TWh) - Distribuição Normal', labels={'x': 'Capacidade de geração de energia renovável per capita (TWh)', 'y': 'Densidade de Probabilidade'})
     ),
 ])
 
